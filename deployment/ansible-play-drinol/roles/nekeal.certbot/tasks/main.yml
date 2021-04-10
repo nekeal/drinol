@@ -1,0 +1,62 @@
+---
+- import_tasks: include-vars.yml
+  tags:
+    - certbot
+    - certbot_install
+    - certbot_delete_certs
+    - certbot_create_certs
+
+- import_tasks: setup-RedHat.yml
+  when: ansible_os_family == 'RedHat'
+  tags:
+    - certbot
+
+- import_tasks: install-with-package.yml
+  when: not certbot_install_from_source
+  tags:
+    - certbot
+    - certbot_install
+    - certbot_create_certs
+
+- import_tasks: install-from-source.yml
+  when: certbot_install_from_source
+  tags:
+    - certbot
+    - certbot_install
+    - certbot_create_certs
+
+- include_tasks: delete-existing-cert.yml
+  loop: "{{ certbot_certs }}"
+  loop_control:
+    loop_var: cert_item
+  tags:
+    - certbot
+    - certbot_delete_certs
+
+
+- name: Create certificate with standalone method
+  include_tasks: create-cert-standalone.yml
+  with_items: "{{ certbot_certs }}"
+  when:
+    - certbot_create_if_missing
+    - certbot_create_method == 'standalone'
+  loop_control:
+    loop_var: cert_item
+  tags:
+    - certbot
+    - certbot_create_certs
+
+- name: Create certificate with webroot method
+  include_tasks: create-cert-webroot.yml
+  when:
+    - certbot_create_if_missing
+    - certbot_create_method == 'webroot'
+  with_items: "{{ certbot_certs }}"
+  loop_control:
+    loop_var: cert_item
+  tags:
+    - certbot
+    - certbot_create_certs
+
+- import_tasks: renew-cron.yml
+  when: certbot_auto_renew

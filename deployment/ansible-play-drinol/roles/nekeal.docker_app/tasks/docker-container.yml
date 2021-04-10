@@ -1,0 +1,162 @@
+---
+- name: "Run pre-release commands for {{ container.name }}"
+  docker_container:
+    name: "{{ container.name }}-pre-release"
+    image: "{{ container.image }}"
+    detach: no
+    cleanup: yes
+    state: started
+    volume_driver: "{{ container.volume_driver | default(docker_volume_driver_default) | default(omit) }}"
+    volumes: "{{ container.volumes | default(docker_volumes_default) | default(omit) }}"
+    mounts: "{{ container.mounts | default(docker_mounts_default) | default(omit) }}"
+    env: "{{ container.env | default(docker_env_default) | default(omit) }}"
+    env_file: "{{ container.env_file | default(docker_env_file_default) | default(omit) }}"
+    network_mode: "{{ container.network_mode | default(docker_network_mode_default) | default(omit) }}"
+    networks: "{{ container.networks | default(docker_networks_default) | default(omit) }}"
+    recreate: "{{ container.recreate | default(docker_recreate_default) | default(omit) }}"
+    user: "{{ container.user | default(docker_user_default) | default(omit) }}"
+    command: "{{ command.command }}"
+  register: docker_command_result
+  changed_when:
+    - docker_command_result.containers is defined
+    - not command.not_changed_when_string_in_output in docker_command_result.container.Output | lower
+  loop: "{{ container.pre_release_commands | default([]) }}"
+  loop_control:
+    loop_var: command
+  tags:
+    - docker_app
+    - docker
+    - docker_container
+
+- name: "Run or stop docker container - {{ container.name }}"
+  docker_container:
+    name: "{{ container.name }}"
+    image: "{{ container.image | default(docker_image_default) | default(omit) }}"
+    pull: "{{ container.pull | default(docker_pull_default) | default(omit) }}"
+    restart: "{{ container.restart | default(docker_restart_default) | default(omit) }}"
+    restart_policy: "{{ container.restart_policy | default(docker_restart_policy_default) | default(omit) }}"
+    cleanup: "{{ container.cleanup | default(docker_cleanup_default) | default(omit) }}"
+    working_dir: "{{ container.working_dir | default(docker_working_dir_default) | default(omit) }}"
+    volume_driver: "{{ container.volume_driver | default(docker_volume_driver_default) | default(omit) }}"
+    volumes: "{{ container.volumes | default(docker_volumes_default) | default(omit) }}"
+    mounts: "{{ container.mounts | default(docker_mounts_default) | default(omit) }}"
+    detach: "{{ container.detach | default(docker_detach_default) | default(omit) }}"
+    env: "{{ container.env | default(docker_env_default) | default(omit) }}"
+    env_file: "{{ container.env_file | default(docker_env_file_default) | default(omit) }}"
+    network_mode: "{{ container.network_mode | default(docker_network_mode_default) | default(omit) }}"
+    networks: "{{ container.networks | default(docker_networks_default) | default(omit) }}"
+    recreate: "{{ container.recreate | default(docker_recreate_default) | default(omit) }}"
+    user: "{{ container.user | default(docker_user_default) | default(omit) }}"
+    state: "{{ container.state | default(docker_state_default) }}"
+    command: "{{ container.command | default(docker_command_default) | default(omit) }}"
+    auto_remove: "{{ container.auto_remove | default(docker_auto_remove_default) | default(omit) }}"
+    blkio_weight: "{{ container.blkio_weight | default(docker_blkio_weight_default) | default(omit) }}"
+    capabilities: "{{ container.capabilities | default(docker_capabilities_default) | default(omit) }}"
+    cap_drop: "{{ container.cap_drop | default(docker_cap_drop_default) | default(omit) }}"
+    comparisons: "{{ container.comparisons | default(docker_comparisons_default) | default(omit) }}"
+    cpu_period: "{{ container.cpu_period | default(docker_cpu_period_default) | default(omit) }}"
+    cpu_quota: "{{ container.cpu_quota | default(docker_cpu_quota_default) | default(omit) }}"
+    cpuset_cpus: "{{ container.cpuset_cpus | default(docker_cpuset_cpus_default) | default(omit) }}"
+    cpuset_mems: "{{ container.cpuset_mems | default(docker_cpuset_mems_default) | default(omit) }}"
+    cpu_shares: "{{ container.cpu_shares | default(docker_cpu_shares_default) | default(omit) }}"
+    devices: "{{ container.devices | default(docker_devices_default) | default(omit) }}"
+    device_read_bps: "{{ container.device_read_bps | default(docker_device_read_bps_default) | default(omit) }}"
+    device_write_bps: "{{ container.device_write_bps | default(docker_device_write_bps_default) | default(omit) }}"
+    device_read_iops: "{{ container.device_read_iops | default(docker_device_read_iops_default) | default(omit) }}"
+    device_write_iops: "{{ container.device_write_iops | default(docker_device_write_iops_default) | default(omit) }}"
+    dns_opts: "{{ container.dns_opts | default(docker_dns_opts_default) | default(omit) }}"
+    dns_servers: "{{ container.dns_servers | default(docker_dns_servers_default) | default(omit) }}"
+    dns_search_domains: "{{ container.dns_search_domains | default(docker_dns_search_domains_default) | default(omit) }}"
+    domainname: "{{ container.domainname | default(docker_domainname_default) | default(omit) }}"
+    entrypoint: "{{ container.entrypoint | default(docker_entrypoint_default) | default(omit) }}"
+    etc_hosts: "{{ container.etc_hosts | default(docker_etc_hosts_default) | default(omit) }}"
+    exposed_ports: "{{ container.exposed_ports | default(docker_exposed_ports_default) | default(omit) }}"
+    force_kill: "{{ container.force_kill | default(docker_force_kill_default) | default(omit) }}"
+    groups: "{{ container.groups | default(docker_groups_default) | default(omit) }}"
+    healthcheck: "{{ container.healthcheck | default(docker_healthcheck_default) | default(omit) }}"
+    hostname: "{{ container.hostname | default(docker_hostname_default) | default(omit) }}"
+    ignore_image: "{{ container.ignore_image | default(docker_ignore_image_default) | default(omit) }}"
+    init: "{{ container.init | default(docker_init_default) | default(omit) }}"
+    interactive: "{{ container.interactive | default(docker_interactive_default) | default(omit) }}"
+    ipc_mode: "{{ container.ipc_mode | default(docker_ipc_mode_default) | default(omit) }}"
+    keep_volumes: "{{ container.keep_volumes | default(docker_keep_volumes_default) | default(omit) }}"
+    kill_signal: "{{ container.kill_signal | default(docker_kill_signal_default) | default(omit) }}"
+    kernel_memory: "{{ container.kernel_memory | default(docker_kernel_memory_default) | default(omit) }}"
+    labels: "{{ container.labels | default(docker_labels_default) | default(omit) }}"
+    links: "{{ container.links | default(docker_links_default) | default(omit) }}"
+    log_driver: "{{ container.log_driver | default(docker_log_driver_default) | default(omit) }}"
+    log_options: "{{ container.log_options | default(docker_log_options_default) | default(omit) }}"
+    mac_address: "{{ container.mac_address | default(docker_mac_address_default) | default(omit) }}"
+    memory: "{{ container.memory | default(docker_memory_default) | default(omit) }}"
+    memory_reservation: "{{ container.memory_reservation | default(docker_memory_reservation_default) | default(omit) }}"
+    memory_swap: "{{ container.memory_swap | default(docker_memory_swap_default) | default(omit) }}"
+    memory_swappiness: "{{ container.memory_swappiness | default(docker_memory_swappiness_default) | default(omit) }}"
+    networks_cli_compatible: "{{ container.networks_cli_compatible | default(docker_networks_cli_compatible_default) | default(omit) }}"
+    userns_mode: "{{ container.userns_mode | default(docker_userns_mode_default) | default(omit) }}"
+    oom_killer: "{{ container.oom_killer | default(docker_oom_killer_default) | default(omit) }}"
+    oom_score_adj: "{{ container.oom_score_adj | default(docker_oom_score_adj_default) | default(omit) }}"
+    output_logs: "{{ container.output_logs | default(docker_output_logs_default) | default(omit) }}"
+    paused: "{{ container.paused | default(docker_paused_default) | default(omit) }}"
+    pid_mode: "{{ container.pid_mode | default(docker_pid_mode_default) | default(omit) }}"
+    pids_limit: "{{ container.pids_limit | default(docker_pids_limit_default) | default(omit) }}"
+    privileged: "{{ container.privileged | default(docker_privileged_default) | default(omit) }}"
+    published_ports: "{{ container.published_ports | default(docker_published_ports_default) | default(omit) }}"
+    purge_networks: "{{ container.purge_networks | default(docker_purge_networks_default) | default(omit) }}"
+    read_only: "{{ container.read_only | default(docker_read_only_default) | default(omit) }}"
+    restart_retries: "{{ container.restart_retries | default(docker_restart_retries_default) | default(omit) }}"
+    runtime: "{{ container.runtime | default(docker_runtime_default) | default(omit) }}"
+    shm_size: "{{ container.shm_size | default(docker_shm_size_default) | default(omit) }}"
+    security_opts: "{{ container.security_opts | default(docker_security_opts_default) | default(omit) }}"
+    stop_signal: "{{ container.stop_signal | default(docker_stop_signal_default) | default(omit) }}"
+    stop_timeout: "{{ container.stop_timeout | default(docker_stop_timeout_default) | default(omit) }}"
+    trust_image_content: "{{ container.trust_image_content | default(docker_trust_image_content_default) | default(omit) }}"
+    tmpfs: "{{ container.tmpfs | default(docker_tmpfs_default) | default(omit) }}"
+    tty: "{{ container.tty | default(docker_tty_default) | default(omit) }}"
+    ulimits: "{{ container.ulimits | default(docker_ulimits_default) | default(omit) }}"
+    sysctls: "{{ container.sysctls | default(docker_sysctls_default) | default(omit) }}"
+    uts: "{{ container.uts | default(docker_uts_default) | default(omit) }}"
+    volumes_from: "{{ container.volumes_from | default(docker_volumes_from_default) | default(omit) }}"
+    docker_host: "{{ container.docker_host | default(docker_host_default) | default(omit) }}"
+    tls_hostname: "{{ container.tls_hostname | default(docker_tls_hostname_default) | default(omit) }}"
+    api_version: "{{ container.api_version | default(docker_api_version_default) | default(omit) }}"
+    timeout: "{{ container.timeout | default(docker_timeout_default) | default(omit) }}"
+    ca_cert: "{{ container.ca_cert | default(docker_ca_cert_default) | default(omit) }}"
+    client_cert: "{{ container.client_cert | default(docker_client_cert_default) | default(omit) }}"
+    client_key: "{{ container.client_key | default(docker_client_key_default) | default(omit) }}"
+    ssl_version: "{{ container.ssl_version | default(docker_ssl_version_default) | default(omit) }}"
+    tls: "{{ container.tls | default(docker_tls_default) | default(omit) }}"
+    validate_certs: "{{ container.validate_certs | default(docker_validate_certs_default) | default(omit) }}"
+    debug: "{{ container.debug | default(docker_debug_default) | default(omit) }}"
+  tags:
+    - docker_app
+    - docker
+    - docker_container
+
+- name: "Run post-release commands for {{ container.name }}"
+  docker_container:
+    name: "{{ container.name }}-post-release"
+    image: "{{ container.image }}"
+    detach: no
+    cleanup: yes
+    state: started
+    volume_driver: "{{ container.volume_driver | default(docker_volume_driver_default) | default(omit) }}"
+    volumes: "{{ container.volumes | default(docker_volumes_default) | default(omit) }}"
+    mounts: "{{ container.mounts | default(docker_mounts_default) | default(omit) }}"
+    env: "{{ container.env | default(docker_env_default) | default(omit) }}"
+    env_file: "{{ container.env_file | default(docker_env_file_default) | default(omit) }}"
+    network_mode: "{{ container.network_mode | default(docker_network_mode_default) | default(omit) }}"
+    networks: "{{ container.networks | default(docker_networks_default) | default(omit) }}"
+    recreate: "{{ container.recreate | default(docker_recreate_default) | default(omit) }}"
+    user: "{{ container.user | default(docker_user_default) | default(omit) }}"
+    command: "{{ command.command }}"
+  register: docker_command_result
+  changed_when:
+    - docker_command_result.containers is defined
+    - not command.not_changed_when_string_in_output in docker_command_result.container.Output | lower
+  loop: "{{ container.post_release_commands | default([]) }}"
+  loop_control:
+    loop_var: command
+  tags:
+    - docker_app
+    - docker
+    - docker_container

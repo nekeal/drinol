@@ -1,0 +1,13 @@
+- name: Converge
+  hosts: all
+  remote_user: ansible
+  tasks:
+    - name: Set Postgresql version
+      set_fact:
+        postgresql_major_version: "{{ lookup('env', 'POSTGRESQL_VERSION') | default(omit, true) }}"
+
+    - name: "Include postgresql-db"
+      include_role:
+        name: "postgresql-db"
+  vars:
+    ansible_python_interpreter: auto

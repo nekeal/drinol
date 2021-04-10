@@ -1,0 +1,22 @@
+- name: Add postgresql apt repository
+  block:
+    - name: Add singing key from postgresql repository
+      apt_key:
+        url: "{{ postgresql_apt_key_url }}"
+        state: present
+    - name: Add postgresql apt repository
+      apt_repository:
+        repo: "{{ postgresql_apt_repository }}"
+        state: present
+        update_cache: yes
+  become: yes
+  tags:
+    - postgresql
+
+- name: Install postgresql server
+  apt:
+    name: "{{ postgresql_package_name }}"
+    state: present
+  become: yes
+  tags:
+    - postgresql

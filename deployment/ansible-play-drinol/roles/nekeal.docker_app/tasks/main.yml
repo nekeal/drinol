@@ -1,0 +1,48 @@
+---
+# tasks file for docker-app
+- include_tasks: install-docker.yml
+  tags:
+    - docker_app
+    - docker
+    - docker_install
+    - docker_login
+
+- name: Ensure that necessary application's directories exist
+  file:
+    path: "{{ [item.0.root | default(''), item.1] | join('/') }}"
+    owner: "{{ item.0.owner }}"
+    group: "{{ item.0.group | default(item.0.owner) }}"
+    state: directory
+  loop: "{{ docker_app_create_directories | subelements('directories') | default(omit) }}"
+  tags:
+    - docker_app
+    - docker
+    - docker_app_directories
+
+- include_tasks: git-repositories.yml
+  loop: "{{ docker_app_git_repositories | default([]) }}"
+  loop_control:
+    loop_var: repository
+  tags:
+    - docker_app
+    - git
+    - git_perm
+
+
+- include_tasks: docker-image.yml
+  loop: "{{ docker_images }}"
+  loop_control:
+    loop_var: docker_image
+  tags:
+    - docker_app
+    - docker
+    - docker_image
+
+- include_tasks: docker-container.yml
+  loop: "{{ docker_containers }}"
+  loop_control:
+    loop_var: container
+  tags:
+    - docker_app
+    - docker
+    - docker_container

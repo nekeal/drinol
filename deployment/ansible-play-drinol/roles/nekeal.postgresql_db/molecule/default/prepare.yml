@@ -1,0 +1,17 @@
+---
+- name: Converge
+  hosts: all
+  pre_tasks:
+    - name: Update apt cache
+      apt: update_cache=yes cache_valid_time=600
+      when: ansible_os_family in ['Debian', 'Ubuntu']
+      changed_when: false
+    - name: Install gpg-agent
+      apt:
+        name: gpg-agent
+      failed_when: no
+      become: yes
+  tasks:
+    - name: Install locales
+      include_role:
+        name: robertdebock.locale

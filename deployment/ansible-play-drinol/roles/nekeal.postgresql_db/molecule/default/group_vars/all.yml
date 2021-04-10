@@ -1,0 +1,7 @@
+postgresql_users:
+  - name: app
+    password: app123
+
+postgresql_databases:
+  - name: app
+    owner: app

@@ -1,0 +1,49 @@
+---
+- name: Create directory for selfsigned catch-all certificates
+  file:
+    name: "{{ nginx_selfsigned_certificate_directory }}"
+    state: directory
+  become: yes
+  tags:
+    - nginx
+    - nginx_catchall_vhost
+
+- name: Generate private openssl key
+  openssl_privatekey:
+    path: "{{ nginx_selfsigned_certificate_privkey }}"
+    size: 2048
+    select_crypto_backend: cryptography
+  become: yes
+  tags:
+    - nginx
+    - nginx_catchall_vhost
+
+- name: Generate Certificate Signing Request (CSR)
+  openssl_csr:
+    path: "{{ nginx_selfsigned_certificate_csr }}"
+    privatekey_path: "{{ nginx_selfsigned_certificate_privkey }}"
+    common_name: selfsigned
+  become: yes
+  tags:
+    - nginx
+    - nginx_catchall_vhost
+
+- name: Generate a Self Signed OpenSSL certificate
+  openssl_certificate:
+    path: "{{ nginx_selfsigned_certificate_fullchain }}"
+    privatekey_path: "{{ nginx_selfsigned_certificate_privkey }}"
+    csr_path: "{{ nginx_selfsigned_certificate_csr }}"
+    provider: selfsigned
+  become: yes
+  tags:
+    - nginx
+    - nginx_catchall_vhost
+
+- name: Create the nginx catch-all
+  template:
+    src: "{{ nginx_catchall_template }}"
+    dest: "{{ nginx_vhost_path }}/{{ nginx_catchall_vhost_name }}"
+  become: yes
+  tags:
+    - nginx
+    - nginx_catchall_vhost

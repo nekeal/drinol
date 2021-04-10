@@ -1,0 +1,44 @@
+---
+dist: bionic
+service: docker
+language: python
+python: "3.8"
+
+sudo: required
+
+env:
+  global:
+    - ROLE_NAME: certbot
+  matrix:
+    - MOLECULE_DISTRO: centos8
+    - MOLECULE_DISTRO: centos7
+    - MOLECULE_DISTRO: centos6
+      MOLECULE_PLAYBOOK: playbook-source-install.yml
+    - MOLECULE_DISTRO: debian8
+      MOLECULE_PLAYBOOK: playbook-source-install.yml
+    - MOLECULE_DISTRO: debian9
+    - MOLECULE_DISTRO: debian10
+    - MOLECULE_DISTRO: ubuntu2004
+    - MOLECULE_DISTRO: ubuntu1804
+    - MOLECULE_DISTRO: ubuntu1604
+
+install:
+  # Install test dependencies.
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+  - sudo apt-get update
+  - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
+  - pip install molecule yamllint ansible-lint docker
+
+before_script:
+  # Use actual Ansible Galaxy role name for the project directory.
+  - mv "$PWD" "${PWD%/*}/$ROLE_NAME"
+  - ansible --version
+
+
+script:
+  # Run tests.
+  - molecule test
+
+notifications:
+  webhooks: https://galaxy.ansible.com/api/v1/notifications/

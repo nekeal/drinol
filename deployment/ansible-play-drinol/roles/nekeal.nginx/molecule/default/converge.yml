@@ -1,0 +1,37 @@
+---
+- name: Converge
+  hosts: all
+  remote_user: ansible
+  become: yes
+  vars:
+    nginx_use_ppa: true
+    nginx_remove_default_vhost: true
+    nginx_vhosts:
+      - name: localhost-django
+        server_names:
+          - "localhost"
+        upstreams:
+          - name: local
+            server: localhost:8000
+        template: django-vhost.j2
+        extra_static_roots:
+          - location: '/www/'
+            root: /var/
+        snippets:
+          - location: "~* /static/(.*\\.)(js|css)"
+            expiries: 365d
+            alias: "/var/www/static/$1$2"
+            template: cache.j2
+          - location: "/"
+            upstream: "local"
+            template: "proxy.j2"
+        enable_https: true
+        static_root: /var/www/static/
+        media_root: /var/www/media/
+        certificate: /etc/letsencrypt/live/localhost/fullchain.pem
+        private_key: /etc/letsencrypt/live/localhost/privkey.pem
+  pre_tasks:
+    - debug:
+        var: ansible_python
+  roles:
+    - role: nginx

@@ -1,0 +1,67 @@
+---
+# tasks file for postgresql-db
+- name: Install postgresql python library
+  apt:
+    name: "{{ postgresql_python_library }}"
+  become: yes
+  tags:
+    - postgresql
+
+- name: Install postgresql
+  import_tasks: install.yml
+  when: postgresql_install
+
+- name: "Start and enable {{ postgresql_package_name }} server"
+  service:
+    name: postgresql
+    enabled: yes
+    state: started
+  become: yes
+  tags:
+    - postgresql
+
+- name: Create postgresql users
+  postgresql_user:
+    name: "{{ item.name }}"
+    password: "{{ item.password }}"
+    encrypted: "{{ item.encrypted | default('yes') }}"
+    priv: "{{ item.priv | default(omit) }}"
+    role_attr_flags: "{{ item.role_attr_flags | default(omit) }}"
+    db: "{{ item.db | default(omit) }}"
+    login_host: "{{ item.login_host | default('localhost') }}"
+    login_password: "{{ item.login_password | default(omit) }}"
+    login_user: "{{ item.login_user | default(postgresql_user) }}"
+    login_unix_socket: "{{ item.login_unix_socket | default(postgresql_unix_socket) }}"
+    port: "{{ item.port | default(omit) }}"
+    state: "{{ item.state | default('present') }}"
+  with_items: "{{ postgresql_users }}"
+  become: true
+  become_user: "{{ postgresql_user }}"
+  vars:
+    ansible_ssh_pipelining: true
+  tags:
+    - postgresql
+    - postgresql_user
+
+- name: Create postgresql databases
+  postgresql_db:
+    name: "{{ item.name }}"
+    lc_collate: "{{ item.lc_collate | default('en_US.UTF-8') }}"
+    lc_ctype: "{{ item.lc_ctype | default('en_US.UTF-8') }}"
+    encoding: "{{ item.encoding | default('UTF-8') }}"
+    template: "{{ item.template | default('template0') }}"
+    login_host: "{{ item.login_host | default('localhost') }}"
+    login_password: "{{ item.login_password | default(omit) }}"
+    login_user: "{{ item.login_user | default(postgresql_user) }}"
+    login_unix_socket: "{{ item.login_unix_socket | default(postgresql_unix_socket) }}"
+    port: "{{ item.port | default(omit) }}"
+    owner: "{{ item.owner | default(postgresql_user) }}"
+    state: "{{ item.state | default('present') }}"
+  with_items: "{{ postgresql_databases }}"
+  become: true
+  become_user: "{{ postgresql_user }}"
+  vars:
+      ansible_ssh_pipelining: true
+  tags:
+    - postgresql
+    - postgresql_db

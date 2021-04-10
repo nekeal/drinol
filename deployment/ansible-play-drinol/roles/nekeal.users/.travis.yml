@@ -1,0 +1,47 @@
+---
+language: python
+python: "3.8"
+
+# Use the new container infrastructure
+sudo: false
+
+# Install ansible
+addons:
+  apt:
+    packages:
+    - python-pip
+
+env:
+  global:
+    - ROLE_NAME: users
+  matrix:
+    - MOLECULE_DISTRIBUTION: ubuntu18
+    - MOLECULE_DISTRIBUTION: ubuntu20
+    - MOLECULE_DISTRIBUTION: debian8
+    - MOLECULE_DISTRIBUTION: debian9
+    - MOLECULE_DISTRIBUTION: debian10
+
+install:
+  # Install test dependencies.
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+  - sudo apt-get update
+  - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
+  - pip install -r requirements.txt
+
+before_script:
+  - mv "$PWD" "${PWD%/*}/users"
+  # Install ansible
+  - pip install ansible molecule docker testinfra pytest pytest-xdist
+
+  # Check ansible version
+  - ansible --version
+
+  - printf '[defaults]\nroles_path=../' >ansible.cfg
+
+script:
+  # Basic role syntax check
+  - molecule test
+
+notifications:
+  webhooks: https://galaxy.ansible.com/api/v1/notifications/

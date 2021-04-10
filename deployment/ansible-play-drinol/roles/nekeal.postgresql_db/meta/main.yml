@@ -1,0 +1,25 @@
+galaxy_info:
+  role_name: postgresql_db
+  author: Szymon Cader
+  description: Ansible role for setting up postgresql server, users and databases
+  license: license (MIT)
+
+  min_ansible_version: 2.9
+
+  platforms:
+  - name: Debian
+    versions:
+    - jessie
+    - stretch
+    - buster
+  - name: Ubuntu
+    versions:
+    - bionic
+    - focal
+
+  galaxy_tags:
+    - postgresql
+    - database
+
+dependencies:
+  - robertdebock.locale

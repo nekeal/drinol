@@ -1,0 +1,87 @@
+---
+- name: Ensure that python docker library is installed
+  pip:
+    name: docker
+    state: present
+  tags:
+    - docker_app
+    - docker
+
+- name: Ensure old docker versions are removed
+  apt:
+    name:
+      - docker
+      - docker-engine
+    state: absent
+  tags:
+    - docker_app
+    - docker
+    - docker_install
+
+- name: Add docker apt key
+  apt_key:
+    url: "{{ docker_apt_key_url }}"
+    id: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
+    state: present
+  tags:
+    - docker_app
+    - docker
+    - docker_install
+
+- name: Add docker apt repository
+  apt_repository:
+    repo: "{{ docker_apt_repository }}"
+    update_cache: yes
+    state: present
+  tags:
+    - docker_app
+    - docker
+    - docker_install
+
+- name: "Install {{ docker_apt_package_name }}"
+  apt:
+    name: "{{ docker_apt_package_name }}"
+    state: present
+  tags:
+    - docker_app
+    - docker
+    - docker_install
+
+- name: Ensure that docker is started and enabled
+  systemd:
+    name: "{{ docker_service_name }}"
+    enabled: yes
+    state: started
+  tags:
+    - docker_app
+    - docker
+    - docker_install
+
+- name: Login to docker registry
+  docker_login:
+    registry_url: "{{ docker_registry_url | default(omit) }}"
+    username: "{{ docker_registry_username | default(omit) }}"
+    password: "{{ docker_registry_password | default(omit) }}"
+    email: "{{ docker_registry_email | default(omit) }}"
+    reauthorize: "{{ docker_registry_reauthorize | default(omit) }}"
+    config_path: "{{ docker_registry_config_path | default(omit) }}"
+    state: "{{ docker_registry_state }}"
+    docker_host: "{{ docker_registry_host | default(docker_host_default) }}"
+    tls_hostname: "{{ docker_registry_tls_hostname | default(docker_tls_hostname_default) }}"
+    api_version: "{{ docker_registry_api_version | default(docker_api_verison_default) }}"
+    timeout: "{{ docker_registry_timeout | default(docker_timeout_default) }}"
+    ca_cert: "{{ docker_registry_ca_cert | default(docker_ca_cert_default) | default(omit) }}"
+    client_cert: "{{ docker_registry_client_cert | default(docker_client_cert_default) | default(omit) }}"
+    client_key: "{{ docker_registry_client_key | default(docker_client_key_default) | default(omit) }}"
+    ssl_version: "{{ docker_registry_ssl_version | default(docker_ssl_version_default) | default(omit) }}"
+    tls: "{{ docker_registry_tls | default(docker_tls_default) | default(omit) }}"
+    validate_certs: "{{ docker_registry_validate_certs | default(docker_validate_certs_default) | default(omit) }}"
+    debug: "{{ docker_registry_debug | default(docker_debug_default) | default(omit) }}"
+  become: yes
+  become_user: "{{ item }}"
+  loop: "{{ docker_registry_users | default(['root']) }}"
+  when: docker_registry_state is defined
+  tags:
+    - docker_app
+    - docker
+    - docker_login

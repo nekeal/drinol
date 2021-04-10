@@ -1,0 +1,42 @@
+---
+- name: "Ensure that app repository is up to date (master)"
+  git:
+    repo: "{{ repository.repo | default(git_repo_default) }}"
+    dest: "{{ repository.dest | default(git_dest_default) }}"
+    version: "{{ repository.version | default(git_version_default) | default(omit) }}"
+    accept_hostkey: "{{ repository.accept_hostkey | default(git_accept_hostkey_default) | default(omit) }}"
+    ssh_opts: "{{ repository.ssh_opts | default(git_ssh_opts_default) | default(omit) }}"
+    key_file: "{{ repository.key_file | default(git_key_file_default) | default(omit) }}"
+    reference: "{{ repository.reference | default(git_reference_default) | default(omit) }}"
+    remote: "{{ repository.remote | default(git_remote_default) | default(omit) }}"
+    refspec: "{{ repository.refspec | default(git_refspec_default) | default(omit) }}"
+    force: "{{ repository.force | default(git_force_default) | default(omit) }}"
+    depth: "{{ repository.depth | default(git_depth_default) | default(omit) }}"
+    clone: "{{ repository.clone | default(git_clone_default) | default(omit) }}"
+    update: "{{ repository.update_repo | default(git_update_repo_default) | default(omit) }}"
+    executable: "{{ repository.executable | default(git_executable_default) | default(omit) }}"
+    bare: "{{ repository.bare | default(git_bare_default) | default(omit) }}"
+    umask: "{{ repository.umask | default(git_umask_default) | default(omit) }}"
+    recursive: "{{ repository.recursive | default(git_recursive_default) | default(omit) }}"
+    track_submodules: "{{ repository.track_submodules | default(git_track_submodules_default) | default(omit) }}"
+    verify_commit: "{{ repository.verify_commit | default(git_verify_commit_default) | default(omit) }}"
+    archive: "{{ repository.archive | default(git_archive_default) | default(omit) }}"
+    separate_git_dir: "{{ repository.separate_git_dir | default(git_separate_git_dir_default) | default(omit) }}"
+    gpg_whitelist: "{{ repository.gpg_whitelist | default(git_gpg_whitelist_default) | default(omit) }}"
+  become_flags: "-HE"
+  tags:
+    - docker_app
+    - git
+
+- name: Correct owner of repository's directory
+  file:
+    path: "{{ repository.dest }}"
+    owner: "{{ repository.owner }}"
+    group: "{{ repository.group | default(repository.owner) }}"
+    recurse: yes
+  changed_when: false
+  when: repository.owner is defined
+  tags:
+    - docker_app
+    - git
+    - git_perm

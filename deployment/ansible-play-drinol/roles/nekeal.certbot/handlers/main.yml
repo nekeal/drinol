@@ -1,0 +1,4 @@
+- name: Reload web server
+  systemd:
+    name: "{{ certbot_reload_web_service_name }}"
+    state: reloaded

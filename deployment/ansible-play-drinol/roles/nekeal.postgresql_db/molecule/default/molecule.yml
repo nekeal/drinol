@@ -1,0 +1,29 @@
+---
+dependency:
+  name: galaxy
+  options:
+    role-file: requirements.yml
+driver:
+  name: docker
+lint: |
+  set -e
+  yamllint .
+  ansible-lint .
+platforms:
+  - name: ${MOLECULE_DISTRIBUTION:-debian10}
+    image: "nekeal/${MOLECULE_DISTRIBUTION:-debian10}-ansible-systemd:latest"
+    command: ${MOLECULE_COMMAND:-""}
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: yes
+    pre_build_image: yes
+provisioner:
+  name: ansible
+  log: true
+  env:
+    POSTGRESQL_VERSION: ${POSTGRESQL_VERSION:-""}
+verifier:
+  name: testinfra
+  options:
+    capture: no
+    n: 2

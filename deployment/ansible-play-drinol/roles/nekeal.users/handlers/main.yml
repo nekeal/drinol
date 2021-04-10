@@ -1,0 +1,5 @@
+---
+# handlers file for users
+- name: Reset ssh connection
+  meta: reset_connection
+  failed_when: false

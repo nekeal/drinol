@@ -1,0 +1,39 @@
+---
+dist: bionic
+language: python
+python: "3.8"
+
+# Use the new container infrastructure
+sudo: false
+
+env:
+  global:
+    - ROLE_NAME: nginx
+  matrix:
+    - MOLECULE_DISTRIBUTION: ubuntu18
+    - MOLECULE_DISTRIBUTION: ubuntu20
+    - MOLECULE_DISTRIBUTION: debian8
+    - MOLECULE_DISTRIBUTION: debian9
+    - MOLECULE_DISTRIBUTION: debian10
+# Install ansible
+addons:
+  apt:
+    packages:
+      - python-pip
+
+install:
+  - mv "$PWD" "${PWD%/*}/$ROLE_NAME"
+  # Install ansible
+  - pip install -r requirements.txt
+
+  # Check ansible version
+  - ansible --version
+
+  - printf '[defaults]\nroles_path=../' >ansible.cfg
+
+script:
+  # Basic role syntax check
+  - molecule test
+
+notifications:
+  webhooks: https://galaxy.ansible.com/api/v1/notifications/

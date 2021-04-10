@@ -1,0 +1,28 @@
+---
+- name: Converge
+  hosts: all
+  pre_tasks:
+    - name: Explicitly set ansible python interpreter
+      set_fact:
+        ansible_python_interpreter: "{{ ansible_python.executable }}"
+  tasks:
+    - name: "Include users"
+      include_role:
+        name: "users"
+      vars:
+        users_groups:
+          - docker
+        users:
+          - username: test1
+            uid: 1100
+            groups:
+              - sudo
+              - docker
+            ssh_keys:
+              - test1
+              - test2
+          - username: app
+            ssh_keys:
+              - test2
+        users_root_ssh_keys:
+          - test1

@@ -1,0 +1,16 @@
+
+location {{ config.location }} {
+    proxy_pass http://{{ config.upstream }};
+    {% if config.set_forwarded_host | default(nginx_proxy_set_forwarded_host_default) %}
+    proxy_set_header X-Forwarded-Host $server_name;
+    {% endif %}
+    {% if config.set_host | default(nginx_proxy_set_host_default) %}
+    proxy_set_header Host $host;
+    {% endif %}
+    {% if config.set_real_ip | default(nginx_proxy_set_real_ip_default) %}
+    proxy_set_header X-Real-IP $remote_addr;
+    {% endif %}
+    {% if config.set_forwarded_proto | default(nginx_proxy_set_forwarded_proto_default) %}
+    proxy_set_header X-Forwarded-Proto $scheme;
+    {% endif %}
+}

@@ -1,0 +1,16 @@
+{
+  "template": "https://github.com/krzempekk/cookiecutter-react-template",
+  "commit": "3d3dbb6b632edecd2f56cdaa914e50ecc7d9f23e",
+  "checkout": null,
+  "context": {
+    "cookiecutter": {
+      "root_folder_name": "frontend",
+      "project_name": "drinol-frontend",
+      "_copy_without_render": [
+        "src/commons/apiEndpoints.ts"
+      ],
+      "_template": "https://github.com/krzempekk/cookiecutter-react-template"
+    }
+  },
+  "directory": null
+}

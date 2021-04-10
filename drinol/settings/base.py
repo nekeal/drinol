@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from django.utils.translation import gettext_lazy as _
 from environs import Env
 
 env = Env()
@@ -37,7 +38,10 @@ THIRD_PARTY_APPS = [
     "webpack_loader",
 ]
 
-LOCAL_APPS = ["drinol.accounts.apps.AccountsConfig"]
+LOCAL_APPS = [
+    "drinol.accounts.apps.AccountsConfig",
+    "drinol.translations.apps.TranslationsConfig",
+]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
@@ -47,6 +51,7 @@ MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -102,6 +107,11 @@ AUTH_PASSWORD_VALIDATORS = [
 # ------------- INTERNALIZATION -------------
 LANGUAGE_CODE = "en-us"
 
+LANGUAGES = [
+    ("pl", _("Polish")),
+    ("en", _("English")),
+]
+
 TIME_ZONE = "Europe/Warsaw"
 
 USE_I18N = True
@@ -117,3 +127,6 @@ STATIC_ROOT = BASE_DIR.joinpath("public")
 # ------------- MEDIA -------------
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR.joinpath("media")
+
+# ------------- MODELS -------------
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

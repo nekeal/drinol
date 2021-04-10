@@ -1,0 +1,15 @@
+- model: translations.translation
+  pk: 1
+  fields:
+    name: Site title
+    key: site-title
+    value_pl: Drinol
+    value_en: Drinol
+- model: translations.translation
+  pk: 2
+  fields:
+    name: Navbar title
+    key: navbar-title
+    value_pl: Boczna nawigacja
+    value_en: Side navbar
+

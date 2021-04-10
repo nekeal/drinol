@@ -7,4 +7,5 @@ router = DefaultRouter()
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include(router.urls)),
+    path("api/translations/", include("drinol.translations.urls")),
 ]

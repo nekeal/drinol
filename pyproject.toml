@@ -1,0 +1,64 @@
+[tool.black]
+max-line-length = 88
+
+[tool.isort]
+profile = "black"
+
+[tool.coverage.report]
+branch = true
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:"
+]
+omit = [
+    "**/fixtures.py",
+    "manage.py",
+    "**/wsgi.py",
+    "**/settings/*.py",
+    "**/migrations/*.py",
+]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "drinol.settings.local"
+python_files = ["tests.py", "test_*.py", "*_tests.py"]
+norecursedirs = ["deployment*",
+                 ".git/*",
+                 ".mypy_cache/*",
+                 ".pytest_cache/*",
+                 "migrations/*",
+                 "drinol/frontend/*"
+]
+#addopts = "--nomigrations"
+[tool.tox]
+legacy_tox_ini = """
+[tox]
+envlist = py38, py39, flake8, black, isort, mypy
+skipsdist = True
+
+[gh-actions]
+python =
+    3.8: py38
+    3.9: py39
+
+[testenv:flake8]
+basepython = python
+deps = flake8
+commands = flake8 --format=default drinol
+
+[testenv:black]
+deps = black
+commands = black --check drinol
+
+[testenv:isort]
+deps = isort
+commands = isort --check drinol
+
+[testenv:mypy]
+deps = -r requirements/dev.txt
+commands = mypy drinol
+
+[testenv]
+setenv = PYTHONPATH = {toxinidir}
+deps = -r requirements/dev.txt
+commands = pytest drinol
+"""

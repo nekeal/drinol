@@ -1,0 +1,27 @@
+{
+  "template": "https://github.com/nekeal/cookiecutter-django-api",
+  "commit": "72dfb818b2e632601c17ca50dcd2bc8fde9c7d57",
+  "checkout": null,
+  "context": {
+    "cookiecutter": {
+      "project_name": "drinol",
+      "full_project_name": "Drinol",
+      "github_username": "nekeal",
+      "github_repository_name": "drinol",
+      "email": "szymon.sc.cader@gmail.com",
+      "description": "App for coordinating drinking during party",
+      "use_jazzmin": "y",
+      "use_drf": "y",
+      "use_drf_flex_fields": "y",
+      "use_jwt": "y",
+      "use_django_filters": "y",
+      "use_django_extensions": "y",
+      "use_tox": "y",
+      "use_celery": "n",
+      "use_dbbackup": "y",
+      "use_react_frontend": "y",
+      "_template": "https://github.com/nekeal/cookiecutter-django-api"
+    }
+  },
+  "directory": null
+}

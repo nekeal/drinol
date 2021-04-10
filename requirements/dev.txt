@@ -77,6 +77,8 @@ django-templated-mail==1.1.1
     # via
     #   -r requirements/base.txt
     #   djoser
+django-translated-fields==0.10.2
+    # via -r requirements/base.txt
 django-webpack-loader==0.7.0
     # via -r requirements/base.txt
 django==3.2
@@ -88,6 +90,7 @@ django==3.2
     #   django-filter
     #   django-jazzmin
     #   django-stubs
+    #   django-translated-fields
     #   djangorestframework
     #   djangorestframework-simplejwt
 djangorestframework-simplejwt==4.6.0

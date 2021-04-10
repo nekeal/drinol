@@ -9,6 +9,7 @@ django-jazzmin
 django-extensions
 django-webpack-loader
 django-admin-display
+django-translated-fields
 psycopg2-binary
 ipython
 environs

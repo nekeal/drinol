@@ -1,0 +1,8 @@
+server {
+    listen 80 default_server;
+    listen 443 ssl default_server;
+    server_name _;
+    ssl_certificate {{ nginx_selfsigned_certificate_fullchain }};
+    ssl_certificate_key {{ nginx_selfsigned_certificate_privkey }};
+    return 444;
+}

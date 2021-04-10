@@ -1,0 +1,93 @@
+---
+- name: Remove default nginx vhost config file (if configured)
+  file:
+    path: "{{ nginx_default_vhost_path }}"
+    state: absent
+  when:
+    - nginx_remove_default_vhost | bool
+    - nginx_create_catchall_vhost | default(true)
+  notify: restart nginx
+  tags:
+    - nginx
+    - nginx_catchall_vhost
+
+- name: Ensure nginx_vhost_path exists
+  file:
+    path: "{{ nginx_vhost_path }}"
+    state: directory
+  notify: reload nginx
+  tags:
+    - nginx
+
+- name: Create missing selfsigned certificates
+  block:
+    - name: Create directories for certificates
+      file:
+        path: "{{ item.certificate | dirname }}"
+        recurse: yes
+      loop: "{{ nginx_vhosts }}"
+
+    - name: Copy temporary selfsigned certificate
+      copy:
+        src: "{{ nginx_selfsigned_certificate_fullchain }}"
+        dest: "{{ item.certificate }}"
+        remote_src: yes
+        force: no
+        mode: 0644
+        owner: root
+      loop: "{{ nginx_vhosts }}"
+      when: nginx_copy_missing_certs
+
+    - name: Copy temporary private_key
+      copy:
+        src: "{{ nginx_selfsigned_certificate_privkey }}"
+        dest: "{{ item.private_key }}"
+        remote_src: yes
+        force: no
+        mode: 0644
+        owner: root
+      loop: "{{ nginx_vhosts }}"
+  tags:
+    - nginx
+    - nginx_certs
+
+- name: Add managed vhost config files
+  template:
+    src: "{{ item.template | default(nginx_vhost_template) }}"
+    dest: "{{ nginx_vhost_path }}/{{ item.name }}{{ nginx_vhost_filename_suffix }}"
+    force: true
+    owner: root
+    group: "{{ root_group }}"
+    lstrip_blocks: yes
+    backup: yes
+    mode: 0644
+  when: item.state | default('present') != 'absent'
+  with_items: "{{ nginx_vhosts }}"
+  notify: reload nginx
+  tags:
+    - skip_ansible_lint
+    - nginx
+    - nginx_site_vhost
+    - nginx_vhost
+
+
+- name: Remove managed vhost config files
+  file:
+    path: "{{ nginx_vhost_path }}/{{ item.name }}{{ nginx_vhost_filename_suffix }}"
+    state: absent
+  when: item.state|default('present') == 'absent'
+  with_items: "{{ nginx_vhosts }}"
+  notify: reload nginx
+  tags:
+    - skip_ansible_lint
+    - nginx
+    - nginx_site_vhost
+    - nginx_vhost
+
+- name: Remove legacy vhosts.conf file
+  file:
+    path: "{{ nginx_vhost_path }}/vhosts.conf"
+    state: absent
+  notify: reload nginx
+  tags:
+    - nginx

@@ -1,0 +1,29 @@
+- name: "{{ docker_image.source | title }} docker image - {{ docker_image.name }}"
+  docker_image:
+    name: "{{ docker_image.name }}"
+    source: "{{ docker_image.source }}"
+    build: "{{ docker_image.build | default(omit) }}"
+    archive_path: "{{ docker_image.archive_path | default(omit) }}"
+    load_path: "{{ docker_image.load_path | default(omit) }}"
+    force_source: "{{ docker_image.force_source | default(omit) }}"
+    force_absent: "{{ docker_image.force_absent | default(omit) }}"
+    force_tag: "{{ docker_image.force_tag | default(omit) }}"
+    push: "{{ docker_image.push | default(omit) }}"
+    repository: "{{ docker_image.repository | default(omit) }}"
+    state: "{{ docker_image.state | default(omit) }}"
+    tag: "{{ docker_image.tag }}"
+    docker_host: "{{ docker_image.docker_host | default(docker_host_default) }}"
+    api_version: "{{ docker_image.api_version | default(docker_api_verison_default) }}"
+    timeout: "{{ docker_image.timeout | default(docker_timeout_default) }}"
+    ca_cert: "{{ docker_image.ca_cert | default(omit) }}"
+    client_cert: "{{ docker_image.client_cert | default(omit) }}"
+    client_key: "{{ docker_image.client_key | default(omit) }}"
+    ssl_version: "{{ docker_image.ssl_version | default(omit) }}"
+    tls: "{{ docker_image.tls | default(omit) }}"
+    tls_hostname: "{{ docker_image.tls_hostname | default(docker_tls_hostname_default) }}"
+    validate_certs: "{{ docker_image.validate_certs | default(omit) }}"
+    debug: "{{ docker_image.debug | default(false) }}"
+  tags:
+    - docker_app
+    - docker
+    - docker_image

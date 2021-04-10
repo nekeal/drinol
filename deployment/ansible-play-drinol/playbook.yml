@@ -1,0 +1,16 @@
+---
+- name: "playbook v0.1.0.nekeal - This playbook configures server and deploys drinol"
+  user: deployer
+  become: yes
+  hosts: all
+  tasks: []
+  vars_files:
+    - "group_vars/secrets.yml"
+  roles:
+    - nekeal.users
+    - viasite-ansible.zsh
+    - nekeal.postgresql_db
+    - nekeal.nginx
+    - nekeal.certbot
+    - nekeal.docker_app
+

@@ -1,0 +1,26 @@
+galaxy_info:
+  role_name: users
+  author: nekeal
+  description: Ansible role for creating users, groups and adding ssh-keys
+  license: license (BSD, MIT)
+
+  min_ansible_version: 2.9
+
+  platforms:
+  - name: Debian
+    versions:
+    - jessie
+    - stretch
+    - buster
+  - name: Ubuntu
+    versions:
+    - bionic
+    - focal
+
+
+  galaxy_tags:
+  - users
+  - groups
+  - sshkeys
+
+dependencies: []

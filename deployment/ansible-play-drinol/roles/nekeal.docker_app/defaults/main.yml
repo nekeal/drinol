@@ -1,0 +1,51 @@
+---
+# defaults file for docker-app
+
+# docker apt
+docker_apt_key_url: https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg
+docker_apt_repository: "deb [arch=amd64] https://download.docker.com/linux/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} stable"
+docker_edition: ce
+docker_apt_package_name: "docker-{{ docker_edition }}"
+
+# docker service
+docker_service_name: docker
+
+
+# docker images and containers common
+docker_host_default: unix://var/run/docker.sock
+docker_tls_hostname_default: localhost
+docker_api_verison_default: auto
+docker_timeout_default: 60
+# docker_ca_cert_default: omit
+# docker_client_cert_default: omit
+# docker_client_key_default: omit
+# docker_ssl_version_default: omit
+# docker_tls_default: omit
+# docker_validate_certs_default: omit
+# docker_debug_default: omit
+
+# specifies docker images to build/pull/remove
+docker_images: []
+# example:
+#   name: alpine
+#   source: pull
+#   state: present
+#   tag: 3.12
+
+# Specifies docker containers to create/stop/kill depending on set state
+docker_containers: []
+# example:
+#   name: nginx-alpine
+#   image: nginx:1.19.1-alpine
+#   state: started
+#   published_ports:
+#     - 80:80
+#   mounts:
+#     - source: /root/
+#       target: /root/host_root
+#       type: bind
+docker_app_git_repositories: []
+# example:
+# - repo: https://github.com/nekeal/simplest-docker-project
+#   dest: /tmp/simplest-docker-project
+#   version: develop

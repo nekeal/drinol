@@ -1,0 +1,27 @@
+{
+  "template": "https://github.com/nekeal/cookiecutter-ansible-playbook",
+  "commit": "c862662dfc15936f8ae135dd4a16737fe0ab1889",
+  "checkout": "adjustments",
+  "context": {
+    "cookiecutter": {
+      "year": "2021",
+      "project_name": "drinol",
+      "playbook_name": "playbook",
+      "inventory": "inventory.txt",
+      "python_version": "3.8",
+      "use_standard_roles": "yes",
+      "author": "nekeal",
+      "author_github": "nekeal",
+      "company": "",
+      "description": "This playbook configures server and deploys drinol",
+      "license": "MIT",
+      "vagrant_provider": "virtualbox",
+      "vagrant_ram": "1024",
+      "vagrant_cpus": "2",
+      "vagrant_box": "debian/buster64",
+      "vagrant_play_path": "/tmp/ansible-play",
+      "_template": "https://github.com/nekeal/cookiecutter-ansible-playbook"
+    }
+  },
+  "directory": null
+}

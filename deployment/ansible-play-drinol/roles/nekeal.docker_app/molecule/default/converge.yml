@@ -1,0 +1,102 @@
+---
+- name: Converge
+  hosts: all
+  remote_user: ansible
+  become: yes
+  vars:
+    docker_app_git_repositories:
+      - repo: https://github.com/nekeal/simplest-docker-project
+        dest: /tmp/simplest-docker-project
+    docker_app_create_directories:
+      - root: /tmp
+        owner: root
+        directories:
+          - dir1
+          - dir2
+    docker_images:
+      - name: alpine
+        pull: yes
+        source: pull
+        state: present
+        tag: 3.12
+      - name: sample-docker-image
+        source: build
+        build:
+          path: "/opt"
+          dockerfile: Dockerfile.sample
+          pull: yes
+        tag: "test"
+        state: present
+      - name: django
+        source: build
+        build:
+          path: "/tmp/simplest-docker-project"
+          pull: yes
+        tag: "1.0.0"
+        state: present
+    docker_containers:
+      - name: alpine
+        image: alpine:3.11
+        pull: yes
+        state: present
+        comparisons:
+          "*": strict
+      - name: nginx-alpine
+        image: nginx:1.19.1-alpine
+        state: started
+        published_ports:
+          - 80:80
+        mounts:
+          - source: /tmp/
+            target: /tmp/host_root
+            type: bind
+        pre_release_commands:
+          - command: "touch /tmp/host_root/pre_release_part"
+            not_changed_when_string_in_output: ""
+          - command: "echo 'Not changed'"
+            not_changed_when_string_in_output: "not changed"
+        post_release_commands:
+          - command: "touch /tmp/host_root/post_release_part"
+            not_changed_when_string_in_output: ""
+      - name: django
+        image: django:1.0.0
+        state: started
+        network: host
+        published_ports:
+          - 8000:8000
+        mounts:
+          - source: /tmp/
+            target: /static
+            type: bind
+          - source: project_volume
+            target: /code
+            type: volume
+        command: "python manage.py runserver 0:8000"
+        comparisons:
+          "*": strict
+        pre_release_commands:
+          - command: "python manage.py collectstatic --no-input"
+            not_changed_when_string_in_output: "0 static files copied"
+        post_release_commands:
+          - command: "python manage.py migrate"
+            not_changed_when_string_in_output: "no migrations to apply"
+  pre_tasks:
+    - name: Install necessary packages
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - gnupg2
+          - git
+    - name: Upload dockerfiles to remote host
+      copy:
+        src: "{{ item }}"
+        dest: /opt/
+      loop:
+        - Dockerfile.sample
+    - name: Install docker python library
+      pip:
+        name: docker
+        state: present
+  roles:
+    - docker_app

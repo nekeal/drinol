@@ -1,0 +1,7 @@
+---
+# defaults file for users
+users_groups: []
+
+users: []
+
+users_root_ssh_keys: []

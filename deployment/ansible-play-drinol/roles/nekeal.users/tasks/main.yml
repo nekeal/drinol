@@ -1,0 +1,58 @@
+---
+# tasks file for users
+- name: Create groups
+  group:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ users_groups }}"
+  tags:
+    - users
+    - groups
+
+- name: Create users
+  user:
+    name: "{{ item.username }}"
+    groups: "{{ item.groups | default([]) }}"
+    shell: "{{ item.shell | default(omit) }}"
+    uid: "{{ item.uid | default(omit) }}"
+    state: present
+  with_items: "{{ users }}"
+  notify: Reset ssh connection
+  tags:
+    - users
+
+- name: Ensure that updated groups will take effect
+  meta: flush_handlers
+
+- name: Add selected users to sudo
+  lineinfile:
+    path: "/etc/sudoers.d/{{ item.username }}"
+    line: "{{ item.username }} ALL=(ALL) NOPASSWD: ALL"
+    state: present
+    mode: 0440
+    create: yes
+    validate: 'visudo -cf %s'
+  when: "'sudo' in item.groups | default([])"
+  loop: "{{ users }}"
+  tags:
+    - users
+    - sudo_users
+    - ssh_keys
+
+- name: Add authorized keys for users
+  authorized_key:
+    user: "{{ item.0.username }}"
+    key: "{{ lookup('file', 'files/ssh/' + item.1 + '.pub') }}"
+  loop: "{{ users | subelements('ssh_keys', skip_missing=true) }}"
+  tags:
+    - users
+    - ssh_keys
+
+- name: Add authorized keys for root user
+  authorized_key:
+    user: root
+    key: "{{ lookup('file', 'files/ssh/' + item + '.pub') }}"
+  with_items: "{{ users_root_ssh_keys }}"
+  tags:
+    - users
+    - ssh_keys

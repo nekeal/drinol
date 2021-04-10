@@ -1,0 +1,65 @@
+# {{ ansible_managed }}
+
+{% for upstream in item.upstreams | default([]) %}
+upstream {{ upstream.name }} {
+server {{ upstream.server }};
+{% if upstream.extra_parameters is defined %}
+    {{ upstream.extra_parameters | indent(4) }}
+{% endif %}
+}
+{% endfor %}
+
+server {
+    listen {{ item.listen_port | default(nginx_vhost_default_listen_port) }};
+    {% if item.enable_https | default(nginx_vhost_default_enable_https) %}
+    listen 443 ssl {% if item.enable_http2 | default(false) %}http2{% endif %};
+    {% endif %}
+    server_name {% for server_name in item.server_names %}{{ server_name }} {% endfor %};
+
+    access_log /var/log/nginx/{{ item.access_log | default(item.name) }}.access.log;
+    error_log /var/log/nginx/{{ item.error_log | default(item.name) }}.error.log;
+
+    {% if item.force_https | default(nginx_vhost_default_force_https) %}
+    if ($scheme = http) {
+        return 301 https://$host$request_uri;
+    }
+    {% endif %}
+
+    {% if item.enable_https | default(nginx_vhost_default_enable_https) %}
+    ssl_certificate {{ item.certificate }};
+    ssl_certificate_key {{ item.private_key }};
+    ssl_trusted_certificate {{ item.certificate }};
+    {% endif %}
+
+    {% if item.error_page is defined %}
+    error_page {{ item.error_page }};
+    {% endif %}
+
+    {% if item.static_root is defined %}
+    location /static/ {
+        alias {{ item.static_root }};
+    }
+    {% endif %}
+
+    {% if item.media_root is defined %}
+    location /media/ {
+        alias {{ item.media_root }};
+    }
+    {% endif %}
+
+    {% for location in item.extra_static_roots | default([]) %}
+    location {{ location.location }} {
+        {% if location.alias is defined %}
+        alias {{ location.alias }};
+        {% elif  location.root is defined %}
+        root {{ location.root }};
+        {% endif %}
+    }
+    {% endfor %}
+    {% for config in item.snippets | default([]) %}
+        {% filter indent(4) %}
+            {% include 'snippets/'+config.template %}
+        {% endfilter %}
+
+    {% endfor %}
+}

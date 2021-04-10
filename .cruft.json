@@ -1,6 +1,6 @@
 {
   "template": "https://github.com/nekeal/cookiecutter-django-api",
-  "commit": "72dfb818b2e632601c17ca50dcd2bc8fde9c7d57",
+  "commit": "3ecb876d3aa1e2788b03f5e2e1f50fd75f7bb1aa",
   "checkout": null,
   "context": {
     "cookiecutter": {

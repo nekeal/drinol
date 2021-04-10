@@ -12,7 +12,7 @@ App for coordinating drinking during party
 
 ## Docker way
 - [Docker](https://docs.docker.com/engine/install/)  
-- [Docker Compose](https://docs.docker.com/compose/install/)  
+- [Docker Compose](https://docs.docker.com/compose/install/)
 
 ## Local Development
 

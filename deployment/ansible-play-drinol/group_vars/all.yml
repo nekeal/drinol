@@ -26,6 +26,9 @@ _base_users:
     ssh_keys:
       - nekeal
   - username: deployer
+    groups:
+      - docker
+      - sudo
     ssh_keys:
       - github-actions
 

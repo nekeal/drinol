@@ -25,6 +25,9 @@ _base_users:
       - sudo
     ssh_keys:
       - nekeal
+  - username: deployer
+    ssh_keys:
+      - github-actions
 
 zsh_user: nekeal
 

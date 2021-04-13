@@ -1,8 +1,15 @@
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
 from .base import *
 
 DEBUG = False
 
 ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", ["*"])
+sentry_sdk.init(
+    dsn="https://abdd647665164c99998fa2ab00f68d35@o288820.ingest.sentry.io/5718101",
+    integrations=[DjangoIntegration()],
+)
 
 # ------------- LOGGING -------------
 LOGGING = {

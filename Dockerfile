@@ -35,7 +35,7 @@ FROM backend-base as backend-dev
 ADD requirements/dev.txt .
 RUN --mount=type=cache,target=/root/.cache/pip pip install -r dev.txt
 
-FROM backend as production
+FROM backend-base as production
 ADD requirements/prod.txt .
 RUN --mount=type=cache,target=/root/.cache/pip pip install -r prod.txt
 COPY --from=frontend-build /app/build ./drinol/frontend/build

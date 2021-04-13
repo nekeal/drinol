@@ -1,7 +1,7 @@
 {
-  "template": "/home/sccad/PycharmProjects/cookiecutter-django-api",
-  "commit": "3ecb876d3aa1e2788b03f5e2e1f50fd75f7bb1aa",
-  "checkout": "sentry",
+  "template": "https://github.com/nekeal/cookiecutter-django-api",
+  "commit": "515fa28a80faa3303dcbf6efa184a0c2fc742839",
+  "checkout": null,
   "context": {
     "cookiecutter": {
       "project_name": "drinol",
@@ -14,6 +14,7 @@
       "use_drf": "y",
       "use_drf_flex_fields": "y",
       "use_jwt": "y",
+      "use_sentry": "y",
       "use_django_filters": "y",
       "use_django_extensions": "y",
       "use_tox": "y",

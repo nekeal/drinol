@@ -1,7 +1,7 @@
 {
-  "template": "https://github.com/nekeal/cookiecutter-django-api",
+  "template": "/home/sccad/PycharmProjects/cookiecutter-django-api",
   "commit": "3ecb876d3aa1e2788b03f5e2e1f50fd75f7bb1aa",
-  "checkout": null,
+  "checkout": "sentry",
   "context": {
     "cookiecutter": {
       "project_name": "drinol",

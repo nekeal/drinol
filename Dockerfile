@@ -18,7 +18,7 @@ RUN npm run build
 FROM alpine as frontend-build
 WORKDIR /app
 COPY --from=frontend-builder /app/build ./build
-COPY --from=frontend-builder /app/config ./config
+#COPY --from=frontend-builder /app/config ./config
 
 FROM python:3.8.7-slim as backend-base
 
@@ -39,5 +39,5 @@ FROM backend-base as production
 ADD requirements/prod.txt .
 RUN --mount=type=cache,target=/root/.cache/pip pip install -r prod.txt
 COPY --from=frontend-build /app/build ./drinol/frontend/build
-COPY --from=frontend-build /app/config ./drinol/frontend/config
+#COPY --from=frontend-build /app/config ./drinol/frontend/config
 RUN python manage.py collectstatic --noinput

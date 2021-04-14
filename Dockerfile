@@ -1,5 +1,5 @@
 # syntax = docker/dockerfile:1.2
-FROM node:12.13.1-slim as frontend-dev
+FROM node:14.16.1-slim as frontend-dev
 WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
 COPY ["drinol/frontend/package.json",\
@@ -10,7 +10,7 @@ RUN --mount=type=cache,target=/root/.npm npm install
 COPY drinol/frontend .
 CMD npm run start
 
-FROM node:12.13.1-slim as frontend-builder
+FROM node:14.16.1-slim as frontend-builder
 WORKDIR /app
 COPY --from=frontend-dev /app ./
 RUN npm run build
@@ -18,7 +18,7 @@ RUN npm run build
 FROM alpine as frontend-build
 WORKDIR /app
 COPY --from=frontend-builder /app/build ./build
-COPY --from=frontend-builder /app/config ./config
+COPY --from=frontend-builder /app/webpack-stats.json ./
 
 FROM python:3.8.7-slim as backend-base
 
@@ -39,5 +39,5 @@ FROM backend-base as production
 ADD requirements/prod.txt .
 RUN --mount=type=cache,target=/root/.cache/pip pip install -r prod.txt
 COPY --from=frontend-build /app/build ./drinol/frontend/build
-COPY --from=frontend-build /app/config ./drinol/frontend/config
+COPY --from=frontend-build /app/webpack-stats.json ./drinol/frontend
 RUN python manage.py collectstatic --noinput

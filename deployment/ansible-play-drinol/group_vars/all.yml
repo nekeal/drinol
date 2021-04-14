@@ -60,7 +60,6 @@ certbot_create_if_missing: yes
 certbot_create_method: webroot
 certbot_webroot_path: /var/www/letsencrypt
 certbot_staging_mode: false
-certbot_admin_email: szymon.sc.cader@gmail.com
 
 certbot_certs:
   - domains: "{{ _domains }}"
@@ -77,12 +76,14 @@ nginx_vhosts:
         template: cache.j2
         expiries: 365d
         alias: "/home/{{ _app_user }}/static/$1$2"
-      - location: "/"
+      - location: "~ ^/(admin|api)"
         upstream: "{{ _full_project_name }}"
         template: proxy.j2
     extra_static_roots:
       - location: "/.well-known/acme-challenge/"
         root: "/var/www/letsencrypt/"
+      - location: "/"
+        root: "/home/{{ _app_user }}/react_build/"
     enable_https: true
     static_root: "/home/{{ _app_user }}/static/"
     media_root: "/home/{{ _app_user }}/media/"
@@ -100,6 +101,9 @@ docker_containers:
       - source: "/home/{{ _app_user }}/static"
         target: /public
         type: bind
+      - source: "/home/{{ _app_user }}/react_build"
+        target: /react_build
+        type: bind
       - source: "/home/{{ _app_user }}/media"
         target: /app/media
         type: bind
@@ -111,6 +115,7 @@ docker_containers:
     pre_release_commands:
       - command: "python manage.py collectstatic --no-input"
         not_changed_when_string_in_output: "0 static files copied"
+      - command: "cp -r /app/{{ _project_name }}/frontend/build/. /react_build"
     post_release_commands:
       - command: "python manage.py migrate"
         not_changed_when_string_in_output: "no migrations to apply"
@@ -129,6 +134,7 @@ docker_app_create_directories:
       - logs
       - media
       - static
+      - react_build
 
 docker_registry_state: present
 docker_registry_users:

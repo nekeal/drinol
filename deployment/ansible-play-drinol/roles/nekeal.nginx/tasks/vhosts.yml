@@ -50,6 +50,10 @@
   tags:
     - nginx
     - nginx_certs
+#
+#- debug: "{{ nginx_vhost_path }}"
+#  tags:
+#    - nginx_vhost
 
 - name: Add managed vhost config files
   template:

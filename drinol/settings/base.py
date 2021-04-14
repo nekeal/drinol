@@ -113,7 +113,18 @@ USE_TZ = True
 # ------------- STATIC -------------
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR.joinpath("public")
+STATICFILES_DIRS = [
+    BASE_DIR.joinpath(PROJECT_NAME, "frontend", "build", "static"),
+]
 
 # ------------- MEDIA -------------
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR.joinpath("media")
+
+# ------------- WEBPACK ------------
+WEBPACK_LOADER = {
+    "DEFAULT": {
+        "BUNDLE_DIR_NAME": f"{PROJECT_NAME}/frontend/build/",
+        "STATS_FILE": BASE_DIR.joinpath(PROJECT_NAME, "frontend", "webpack-stats.json"),
+    }
+}

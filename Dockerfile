@@ -2,6 +2,8 @@
 FROM node:14.16.1-slim as frontend-dev
 WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
+ENV CYPRESS_SKIP_BINARY_INSTALL 1
+
 COPY ["drinol/frontend/package.json",\
       "drinol/frontend/yarn.lock",\
       "./"\

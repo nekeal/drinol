@@ -15,9 +15,8 @@ RUN --mount=type=cache,target=/tmp/.yarn yarn install
 COPY drinol/frontend .
 CMD yarn start
 
-FROM node:14.16.1-slim as frontend-builder
+FROM frontend-dev as frontend-builder
 WORKDIR /app
-COPY --from=frontend-dev /app ./
 RUN yarn build
 
 FROM alpine as frontend-build

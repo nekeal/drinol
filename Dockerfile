@@ -3,17 +3,17 @@ FROM node:14.16.1-slim as frontend-dev
 WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
 COPY ["drinol/frontend/package.json",\
-      "drinol/frontend/package-lock.json",\
+      "drinol/frontend/yarn.lock",\
       "./"\
      ]
-RUN --mount=type=cache,target=/root/.npm npm install
+RUN --mount=type=cache,target=/root/.npm yarn install
 COPY drinol/frontend .
-CMD npm run start
+CMD yarn start
 
 FROM node:14.16.1-slim as frontend-builder
 WORKDIR /app
 COPY --from=frontend-dev /app ./
-RUN npm run build
+RUN yarn build
 
 FROM alpine as frontend-build
 WORKDIR /app

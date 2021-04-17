@@ -34,7 +34,8 @@
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject",
-    "cypress:open": "cypress open"
+    "cypress:open": "cypress open",
+    "e2e-tests": "cypress run --headless --browser chrome --spec \"cypress/integration/**/*.test.ts\" --config video=false"
   },
   "eslintConfig": {
     "extends": [

@@ -2,13 +2,16 @@
 FROM node:14.16.1-slim as frontend-dev
 WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
+ENV YARN_CACHE_FOLDER /tmp/.yarn
 ENV CYPRESS_SKIP_BINARY_INSTALL 1
 
 COPY ["drinol/frontend/package.json",\
       "drinol/frontend/yarn.lock",\
       "./"\
      ]
-RUN --mount=type=cache,target=/root/.npm yarn install
+RUN --mount=type=cache,target=/tmp/.yarn ls -R /tmp/.yarn
+RUN --mount=type=cache,target=/tmp/.yarn yarn install
+
 COPY drinol/frontend .
 CMD yarn start
 
@@ -29,17 +32,17 @@ ENV PYTHONUNBUFFERED 1
 WORKDIR /app
 
 ADD requirements/base.txt .
-RUN --mount=type=cache,target=/root/.cache/pip pip install -r base.txt
-ADD . ./
-CMD ["./entrypoint.sh"]
 
 FROM backend-base as backend-dev
 ADD requirements/dev.txt .
 RUN --mount=type=cache,target=/root/.cache/pip pip install -r dev.txt
+ADD . ./
+
 
 FROM backend-base as production
 ADD requirements/prod.txt .
 RUN --mount=type=cache,target=/root/.cache/pip pip install -r prod.txt
+ADD . ./
 COPY --from=frontend-build /app/build ./drinol/frontend/build
 COPY --from=frontend-build /app/webpack-stats.json ./drinol/frontend
 RUN python manage.py collectstatic --noinput

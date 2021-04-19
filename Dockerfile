@@ -9,7 +9,6 @@ COPY ["drinol/frontend/package.json",\
       "drinol/frontend/yarn.lock",\
       "./"\
      ]
-RUN --mount=type=cache,target=/tmp/.yarn ls -R /tmp/.yarn
 RUN --mount=type=cache,target=/tmp/.yarn yarn install
 
 COPY drinol/frontend .
@@ -36,7 +35,6 @@ FROM backend-base as backend-dev
 ADD requirements/dev.txt .
 RUN --mount=type=cache,target=/root/.cache/pip pip install -r dev.txt
 ADD . ./
-
 
 FROM backend-base as production
 ADD requirements/prod.txt .

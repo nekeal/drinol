@@ -1,8 +1,6 @@
 name: Deploy application
 on:
-  push:
-    branches:
-      - github_actions_deployment # change later to master
+  workflow_dispatch::
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -43,6 +41,3 @@ jobs:
           running-workflow-name: deploy
       - name: Run deployment check
         run: ansible-playbook -i inventory.txt playbook.yml -D -t docker_container -e "_docker_tag=${{ github.sha }}"
-
-
-

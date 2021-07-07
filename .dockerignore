@@ -3,9 +3,10 @@ __pycache__
 .mypy_cache
 .git
 .tox
-deployment*
+**/deployment*
 htmlcov
 .pytest_cache
 media
+**/node_modules
 **/frontend/build
 **/frontend/config

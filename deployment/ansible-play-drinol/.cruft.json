@@ -1,7 +1,7 @@
 {
   "template": "https://github.com/nekeal/cookiecutter-ansible-playbook",
   "commit": "c862662dfc15936f8ae135dd4a16737fe0ab1889",
-  "checkout": "adjustments",
+  "checkout": "master",
   "context": {
     "cookiecutter": {
       "year": "2021",

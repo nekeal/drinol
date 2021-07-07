@@ -17,6 +17,7 @@ certifi==2020.12.5
     # via
     #   -r requirements/base.txt
     #   requests
+    #   sentry-sdk
 cffi==1.14.5
     # via
     #   -r requirements/base.txt
@@ -181,6 +182,8 @@ requests==2.25.1
     #   coreapi
     #   requests-oauthlib
     #   social-auth-core
+sentry-sdk==1.0.0
+    # via -r requirements/prod.in
 six==1.15.0
     # via
     #   -r requirements/base.txt
@@ -210,6 +213,7 @@ urllib3==1.26.4
     # via
     #   -r requirements/base.txt
     #   requests
+    #   sentry-sdk
 wcwidth==0.2.5
     # via
     #   -r requirements/base.txt

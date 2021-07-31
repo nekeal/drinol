@@ -29,8 +29,8 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: 3.8
-      - name: Setup upterm session
-        uses: lhotari/action-upterm@v1
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
       - name: Install python requirements
         run: pip install --user -r ../../requirements/deployment.txt
       - name: Register python site packages
